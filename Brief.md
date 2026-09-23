@@ -106,9 +106,9 @@ Notebook harus disusun secara berurutan (*logical progression*) dengan struktur 
 
 Sebelum pengumpulan atau pengarsipan, verifikasi seluruh butir pemeriksaan berikut:
 
-- [ ] **All code/scripts executed successfully without errors**: Seluruh notebook `main.ipynb` berjalan lancar dari awal hingga akhir (*Kernel -> Restart & Run All*).
-- [ ] **All outputs and visualizations clearly visible**: Seluruh tabel, skema Spark, dan ringkasan metrik tampil secara eksplisit di dalam notebook.
-- [ ] **Thorough written interpretations and explanations included**: Setiap hasil agregasi dan latihan mandiri dilengkapi ulasan analitis pada sel Markdown.
-- [ ] **File format verification (.ipynb)**: File utama tersimpan dengan ekstensi `.ipynb` yang valid (`main.ipynb`).
-- [ ] **Environment bootstrap verification**: File `requirements.txt` tersedia dan dapat digunakan untuk replikasi lingkungan.
+- [x] **All code/scripts executed successfully without errors**: Seluruh notebook `main.ipynb` berjalan lancar dari awal hingga akhir (*Kernel -> Restart & Run All*).
+- [x] **All outputs and visualizations clearly visible**: Seluruh tabel, skema Spark, dan ringkasan metrik tampil secara eksplisit di dalam notebook.
+- [x] **Thorough written interpretations and explanations included**: Setiap hasil agregasi dan latihan mandiri dilengkapi ulasan analitis pada sel Markdown.
+- [x] **File format verification (.ipynb)**: File utama tersimpan dengan ekstensi `.ipynb` yang valid (`main.ipynb`).
+- [x] **Environment bootstrap verification**: File `requirements.txt` tersedia dan dapat digunakan untuk replikasi lingkungan.
 - [ ] **Due date check**: Pemeriksaan kepatuhan terhadap batas waktu pengumpulan tugas.
