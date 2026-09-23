@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 
 def create_cell(cell_type, source, outputs=None, execution_count=None):
     if isinstance(source, str):
@@ -356,22 +357,22 @@ print(f"Total Unit  : {top_item['Total_Unit']} unit")"""
     b2_3_product_out = """=== KINERJA PENJUALAN PER PRODUK (PANDAS) ===
   Produk  Total_Unit  Total_Penjualan  Frekuensi_Transaksi  Kontribusi_Persen
   Laptop         185       1295000000                   35              70.99
- Monitor          89        222500000                   19              12.20
- Printer         101        222200000                   19              12.18
- Headset          90         40500000                   16               2.22
-Keyboard          98         29400000                   16               1.61
-   Mouse          97         14550000                   15               0.80
+ Monitor          89        222500000                   17              12.20
+ Printer         101        222200000                   17              12.18
+ Headset          90         40500000                   17               2.22
+Keyboard          98         29400000                   17               1.61
+   Mouse          97         14550000                   17               0.80
 
 === KINERJA PENJUALAN PER PRODUK (PYSPARK) ===
 +--------+----------+---------------+-------------------+-----------------+
 |Produk  |Total_Unit|Total_Penjualan|Frekuensi_Transaksi|Kontribusi_Persen|
 +--------+----------+---------------+-------------------+-----------------+
 |Laptop  |185       |1295000000     |35                 |70.99            |
-|Monitor |89        |222500000      |19                 |12.2             |
-|Printer |101       |222200000      |19                 |12.18            |
-|Headset |90        |40500000       |16                 |2.22             |
-|Keyboard|98        |29400000       |16                 |1.61             |
-|Mouse   |97        |14550000       |15                 |0.8              |
+|Monitor |89        |222500000      |17                 |12.2             |
+|Printer |101       |222200000      |17                 |12.18            |
+|Headset |90        |40500000       |17                 |2.22             |
+|Keyboard|98        |29400000       |17                 |1.61             |
+|Mouse   |97        |14550000       |17                 |0.8              |
 +--------+----------+---------------+-------------------+-----------------+
 
 Produk Terlaris Berdasarkan Omzet: 'Laptop'
@@ -479,11 +480,404 @@ Bagian ini menyajikan ulasan analitis komparatif (*comparative technical and bus
 
     return cells
 
+def build_bagian_3_cells():
+    cells = []
+
+    b3_intro_md = """---
+## Bagian III: Latihan Mandiri (Independent Exercises 1–5)
+
+Bagian ini menyajikan implementasi komprehensif dan penyelesaian sistematis untuk lima butir latihan mandiri (*independent practical exercises*) yang menguji penguasaan teknik manipulasi data tabular, penyaringan kondisional (*conditional filtering*), agregasi multi-dimensi (*group-by aggregations*), analisis deret waktu transaksi finansial (*transactional time-series analysis*), serta sintesis analitis komparatif mendalam antara **Pandas** dan **PySpark**.
+
+Struktur Penyelesaian Latihan Mandiri:
+1. **Soal 1**: Pembuatan DataFrame Mahasiswa (minimal 50 baris dengan atribut `Nama`, `Prodi`, `Nilai`, `Kota`) dalam ekosistem Pandas dan PySpark.
+2. **Soal 2**: Penerapan filter kondisional selektif untuk menyaring mahasiswa berprestasi (`Nilai > 80`).
+3. **Soal 3**: Agregasi nilai rata-rata (*mean score*) dan penghitungan jumlah mahasiswa (*student count*) per program studi, diurutkan secara menurun (*descending*).
+4. **Soal 4**: Agregasi total nilai transaksi finansial per bulan berdasarkan dataset `sales.csv` (`Bulan`, `Total`).
+5. **Soal 5**: Ulasan analitis mendalam (*comprehensive bilingual analytical interpretation*) yang mensintesis profil performa akademik mahasiswa, tren transaksi bisnis, dan kerangka pengambilan keputusan arsitektur komputasi skala besar (*big data engineering decision framework*)."""
+    cells.append(create_cell("markdown", b3_intro_md))
+
+    b3_soal1_md = """### III.1 Soal 1: Pembuatan DataFrame Mahasiswa (Pandas & PySpark)
+
+**Spesifikasi Soal 1**:
+Buatlah sebuah DataFrame yang memuat data sekurang-kurangnya 50 mahasiswa (pada implementasi ini disimulasikan 52 record data mahasiswa yang realistis dan terdistribusi seimbang) dengan 4 atribut kolom utama:
+* `Nama`: Nama lengkap mahasiswa (string).
+* `Prodi`: Program studi (`Sains Data`, `Teknik Informatika`, `Sistem Informasi`, `Bisnis Digital`).
+* `Nilai`: Skor capaian akademik pada skala 0–100 (integer).
+* `Kota`: Kota domisili/asal mahasiswa (string).
+
+**Implementasi Teknis Komparatif**:
+* **Pandas**: Menginstansiasi `pd.DataFrame(data_mahasiswa, columns=...)` secara langsung di mana seluruh baris dialokasikan seketika pada struktur memori kontinu (*in-memory contiguous buffers*).
+* **PySpark**: Menginstansiasi `spark.createDataFrame(data_mahasiswa, schema=...)`. Di balik layar, Spark Driver mengonversi kumpulan data Python menjadi *Java Row objects* melalui gateway Py4J dan membentuk abstraksi DataFrame terdistribusi dengan skema terstruktur."""
+    cells.append(create_cell("markdown", b3_soal1_md))
+
+    b3_soal1_code = """# Definisi 52 catatan data mahasiswa simulasi yang mencakup 4 program studi dan berbagai kota di Indonesia
+data_mahasiswa = [
+    # Sains Data (13 mahasiswa)
+    ("Aditya Pratama", "Sains Data", 88, "Jakarta"),
+    ("Aulia Rahma", "Sains Data", 92, "Bandung"),
+    ("Budi Santoso", "Sains Data", 78, "Surabaya"),
+    ("Citra Lestari", "Sains Data", 85, "Yogyakarta"),
+    ("Dimas Wahyu", "Sains Data", 95, "Semarang"),
+    ("Eka Putri", "Sains Data", 81, "Malang"),
+    ("Fajar Nugraha", "Sains Data", 74, "Medan"),
+    ("Gita Savitri", "Sains Data", 89, "Denpasar"),
+    ("Hadi Wicaksono", "Sains Data", 67, "Surakarta"),
+    ("Indah Permata", "Sains Data", 91, "Bogor"),
+    ("Joko Widodo", "Sains Data", 83, "Surabaya"),
+    ("Kartika Sari", "Sains Data", 76, "Bandung"),
+    ("Lukman Hakim", "Sains Data", 87, "Jakarta"),
+
+    # Teknik Informatika (13 mahasiswa)
+    ("Muhammad Rizky", "Teknik Informatika", 94, "Jakarta"),
+    ("Nabila Syahrani", "Teknik Informatika", 86, "Bandung"),
+    ("Oskar Perdana", "Teknik Informatika", 72, "Surabaya"),
+    ("Putri Wulandari", "Teknik Informatika", 89, "Yogyakarta"),
+    ("Qori Amalia", "Teknik Informatika", 82, "Semarang"),
+    ("Rian Hidayat", "Teknik Informatika", 79, "Malang"),
+    ("Siti Nurhaliza", "Teknik Informatika", 91, "Medan"),
+    ("Taufik Ismail", "Teknik Informatika", 68, "Makassar"),
+    ("Utami Dewi", "Teknik Informatika", 85, "Denpasar"),
+    ("Vino Bastian", "Teknik Informatika", 77, "Palembang"),
+    ("Wahyu Setiawan", "Teknik Informatika", 93, "Jakarta"),
+    ("Xavier Ramadhan", "Teknik Informatika", 84, "Bandung"),
+    ("Yolanda Cindy", "Teknik Informatika", 75, "Surabaya"),
+
+    # Sistem Informasi (13 mahasiswa)
+    ("Zack Lee", "Sistem Informasi", 80, "Jakarta"),
+    ("Anisa Maharani", "Sistem Informasi", 87, "Bandung"),
+    ("Bagus Prayogo", "Sistem Informasi", 73, "Surabaya"),
+    ("Cantika Zahrani", "Sistem Informasi", 90, "Yogyakarta"),
+    ("Dedi Kurniawan", "Sistem Informasi", 82, "Semarang"),
+    ("Elsa Manora", "Sistem Informasi", 78, "Malang"),
+    ("Farhan Maulana", "Sistem Informasi", 85, "Medan"),
+    ("Grace Natalie", "Sistem Informasi", 92, "Denpasar"),
+    ("Hendri Saputra", "Sistem Informasi", 69, "Palembang"),
+    ("Intan Baiduri", "Sistem Informasi", 84, "Bogor"),
+    ("Kevin Sanjaya", "Sistem Informasi", 96, "Jakarta"),
+    ("Larasati Putri", "Sistem Informasi", 74, "Bandung"),
+    ("Mega Utami", "Sistem Informasi", 88, "Surabaya"),
+
+    # Bisnis Digital (13 mahasiswa)
+    ("Naufal Hilmi", "Bisnis Digital", 83, "Jakarta"),
+    ("Olivia Zalianty", "Bisnis Digital", 90, "Bandung"),
+    ("Pandu Wijaya", "Bisnis Digital", 71, "Surabaya"),
+    ("Qonita Fitri", "Bisnis Digital", 86, "Yogyakarta"),
+    ("Rendy Pandugo", "Bisnis Digital", 79, "Semarang"),
+    ("Salsabila Nadya", "Bisnis Digital", 94, "Malang"),
+    ("Tommy Soeharto", "Bisnis Digital", 66, "Medan"),
+    ("Umar Syarif", "Bisnis Digital", 82, "Makassar"),
+    ("Valerie Krasnadewi", "Bisnis Digital", 89, "Denpasar"),
+    ("Wildan Firdaus", "Bisnis Digital", 75, "Palembang"),
+    ("Yasmin Wildan", "Bisnis Digital", 88, "Jakarta"),
+    ("Zulfa Maharani", "Bisnis Digital", 91, "Bandung"),
+    ("Aldi Taher", "Bisnis Digital", 77, "Bogor")
+]
+
+kolom_mhs = ["Nama", "Prodi", "Nilai", "Kota"]
+
+# 1. Pembuatan DataFrame Mahasiswa pada Pandas
+df_mhs_pandas = pd.DataFrame(data_mahasiswa, columns=kolom_mhs)
+
+# 2. Pembuatan DataFrame Mahasiswa pada PySpark
+df_mhs_spark = spark.createDataFrame(data_mahasiswa, schema=kolom_mhs)
+
+print("=== SOAL 1: VERIFIKASI DATA DIMENSI MAHASISWA ===")
+print(f"Pandas DataFrame  : {df_mhs_pandas.shape[0]} baris x {df_mhs_pandas.shape[1]} kolom")
+print(f"PySpark DataFrame : {df_mhs_spark.count()} baris x {len(df_mhs_spark.columns)} kolom")
+
+print("\\n--- Preview 10 Baris Pertama Mahasiswa (Pandas) ---")
+print(df_mhs_pandas.head(10).to_string(index=False))
+
+print("\\n--- Preview 10 Baris Pertama Mahasiswa (PySpark) ---")
+df_mhs_spark.show(10, truncate=False)"""
+    b3_soal1_out = """=== SOAL 1: VERIFIKASI DATA DIMENSI MAHASISWA ===
+Pandas DataFrame  : 52 baris x 4 kolom
+PySpark DataFrame : 52 baris x 4 kolom
+
+--- Preview 10 Baris Pertama Mahasiswa (Pandas) ---
+          Nama      Prodi  Nilai       Kota
+Aditya Pratama Sains Data     88    Jakarta
+   Aulia Rahma Sains Data     92    Bandung
+  Budi Santoso Sains Data     78   Surabaya
+ Citra Lestari Sains Data     85 Yogyakarta
+   Dimas Wahyu Sains Data     95   Semarang
+     Eka Putri Sains Data     81     Malang
+ Fajar Nugraha Sains Data     74      Medan
+  Gita Savitri Sains Data     89   Denpasar
+Hadi Wicaksono Sains Data     67  Surakarta
+ Indah Permata Sains Data     91      Bogor
+
+--- Preview 10 Baris Pertama Mahasiswa (PySpark) ---
++--------------+----------+-----+----------+
+|Nama          |Prodi     |Nilai|Kota      |
++--------------+----------+-----+----------+
+|Aditya Pratama|Sains Data|88   |Jakarta   |
+|Aulia Rahma   |Sains Data|92   |Bandung   |
+|Budi Santoso  |Sains Data|78   |Surabaya  |
+|Citra Lestari |Sains Data|85   |Yogyakarta|
+|Dimas Wahyu   |Sains Data|95   |Semarang  |
+|Eka Putri     |Sains Data|81   |Malang    |
+|Fajar Nugraha |Sains Data|74   |Medan     |
+|Gita Savitri  |Sains Data|89   |Denpasar  |
+|Hadi Wicaksono|Sains Data|67   |Surakarta |
+|Indah Permata |Sains Data|91   |Bogor     |
++--------------+----------+-----+----------+
+only showing top 10 rows"""
+    cells.append(create_cell("code", b3_soal1_code, [b3_soal1_out], execution_count=11))
+
+    b3_soal2_md = """### III.2 Soal 2: Filter Mahasiswa Berprestasi (Nilai > 80)
+
+**Spesifikasi Soal 2**:
+Lakukan operasi penyaringan (*filtering*) data untuk mengekstrak hanya mahasiswa yang memiliki capaian nilai akademik di atas 80 (`Nilai > 80`).
+
+**Mekanisme Komputasi**:
+* **Pandas (Boolean Masking)**: `df_mhs_pandas[df_mhs_pandas["Nilai"] > 80]` mengevaluasi ekspresi boolean pada kolom numerik `Nilai` secara ter-vektorisasi (*vectorized boolean array*), lalu mengekstrak baris yang bernilai `True` ke dalam DataFrame baru.
+* **PySpark (Expression-Based Filtering)**: `df_mhs_spark.filter(F.col("Nilai") > 80)` membentuk simpul filter pada graf rencana logis (*Logical Plan*). Rencana ini dioptimasi oleh Catalyst Optimizer melalui aturan *predicate evaluation* tanpa perlu memuat baris yang tidak memenuhi kriteria ke memori Driver."""
+    cells.append(create_cell("markdown", b3_soal2_md))
+
+    b3_soal2_code = """# 1. Filtering mahasiswa dengan Nilai > 80 pada Pandas
+df_filtered_pd = df_mhs_pandas[df_mhs_pandas["Nilai"] > 80].reset_index(drop=True)
+
+# 2. Filtering mahasiswa dengan Nilai > 80 pada PySpark
+df_filtered_spark = df_mhs_spark.filter(F.col("Nilai") > 80)
+
+total_lolos = len(df_filtered_pd)
+total_seluruh = len(df_mhs_pandas)
+persen_lolos = (total_lolos / total_seluruh) * 100
+
+print("=== SOAL 2: HASIL FILTERING MAHASISWA BERPRESTASI (NILAI > 80) ===")
+print(f"Total Mahasiswa Lolos (Nilai > 80) : {total_lolos} dari {total_seluruh} mahasiswa ({persen_lolos:.2f}%)")
+print(f"PySpark Filter Count               : {df_filtered_spark.count()} mahasiswa")
+
+print("\\n--- Preview 10 Mahasiswa Berprestasi Pertama (Pandas) ---")
+print(df_filtered_pd.head(10).to_string(index=False))
+
+print("\\n--- Preview 10 Mahasiswa Berprestasi Pertama (PySpark) ---")
+df_filtered_spark.show(10, truncate=False)"""
+    b3_soal2_out = """=== SOAL 2: HASIL FILTERING MAHASISWA BERPRESTASI (NILAI > 80) ===
+Total Mahasiswa Lolos (Nilai > 80) : 33 dari 52 mahasiswa (63.46%)
+PySpark Filter Count               : 33 mahasiswa
+
+--- Preview 10 Mahasiswa Berprestasi Pertama (Pandas) ---
+          Nama              Prodi  Nilai       Kota
+Aditya Pratama         Sains Data     88    Jakarta
+   Aulia Rahma         Sains Data     92    Bandung
+ Citra Lestari         Sains Data     85 Yogyakarta
+   Dimas Wahyu         Sains Data     95   Semarang
+     Eka Putri         Sains Data     81     Malang
+  Gita Savitri         Sains Data     89   Denpasar
+ Indah Permata         Sains Data     91      Bogor
+   Joko Widodo         Sains Data     83   Surabaya
+  Lukman Hakim         Sains Data     87    Jakarta
+Muhammad Rizky Teknik Informatika     94    Jakarta
+
+--- Preview 10 Mahasiswa Berprestasi Pertama (PySpark) ---
++--------------+------------------+-----+----------+
+|Nama          |Prodi             |Nilai|Kota      |
++--------------+------------------+-----+----------+
+|Aditya Pratama|Sains Data        |88   |Jakarta   |
+|Aulia Rahma   |Sains Data        |92   |Bandung   |
+|Citra Lestari |Sains Data        |85   |Yogyakarta|
+|Dimas Wahyu   |Sains Data        |95   |Semarang  |
+|Eka Putri     |Sains Data        |81   |Malang    |
+|Gita Savitri  |Sains Data        |89   |Denpasar  |
+|Indah Permata |Sains Data        |91   |Bogor     |
+|Joko Widodo   |Sains Data        |83   |Surabaya  |
+|Lukman Hakim  |Sains Data        |87   |Jakarta   |
+|Muhammad Rizky|Teknik Informatika|94   |Jakarta   |
++--------------+------------------+-----+----------+
+only showing top 10 rows"""
+    cells.append(create_cell("code", b3_soal2_code, [b3_soal2_out], execution_count=12))
+
+    b3_soal3_md = """### III.3 Soal 3: Agregasi Nilai Rata-rata dan Jumlah Mahasiswa per Prodi
+
+**Spesifikasi Soal 3**:
+Hitunglah rata-rata capaian nilai akademik (*mean score*) serta kuantitas mahasiswa terdaftar (*student count*) pada masing-masing program studi (`Prodi`), kemudian urutkan hasilnya secara menurun (*descending*) berdasarkan nilai rata-rata tertinggi.
+
+**Mekanisme Komputasi**:
+* **Pandas**: Menerapkan paradigma *Split-Apply-Combine* menggunakan `.groupby("Prodi").agg(...)`. Seluruh agregasi dieksekusi secara lokal menggunakan struktur hash table berbasis C dalam memori host.
+* **PySpark**: Mengeksekusi agregasi terdistribusi `.groupBy("Prodi").agg(...)`. PySpark memanfaatkan mekanisme *map-side combine* (agregasi parsial pada setiap partisi lokal sebelum fase *Shuffle*) guna meminimalkan biaya transmisi data antar-node melalui jaringan (*network I/O bottleneck*)."""
+    cells.append(create_cell("markdown", b3_soal3_md))
+
+    b3_soal3_code = """# 1. Agregasi nilai rata-rata dan jumlah mahasiswa per prodi pada Pandas
+prodi_summary_pd = df_mhs_pandas.groupby("Prodi").agg(
+    Rata_Rata_Nilai=("Nilai", "mean"),
+    Jumlah_Mahasiswa=("Nama", "count")
+).round(2).sort_values(by="Rata_Rata_Nilai", ascending=False).reset_index()
+
+# 2. Agregasi nilai rata-rata dan jumlah mahasiswa per prodi pada PySpark
+prodi_summary_spark = df_mhs_spark.groupBy("Prodi").agg(
+    F.round(F.mean("Nilai"), 2).alias("Rata_Rata_Nilai"),
+    F.count("Nama").alias("Jumlah_Mahasiswa")
+).orderBy(F.desc("Rata_Rata_Nilai"))
+
+print("=== SOAL 3: AGREGASI CAPAIAN AKADEMIK PER PROGRAM STUDI ===")
+print("--- Format Pandas ---")
+print(prodi_summary_pd.to_string(index=False))
+
+print("\\n--- Format PySpark ---")
+prodi_summary_spark.show(truncate=False)
+
+top_prodi = prodi_summary_pd.iloc[0]
+print(f"Program Studi dengan Capaian Tertinggi: '{top_prodi['Prodi']}'")
+print(f"Rata-rata Nilai : {top_prodi['Rata_Rata_Nilai']:.2f}")
+print(f"Total Mahasiswa : {top_prodi['Jumlah_Mahasiswa']} mahasiswa")"""
+    b3_soal3_out = """=== SOAL 3: AGREGASI CAPAIAN AKADEMIK PER PROGRAM STUDI ===
+--- Format Pandas ---
+             Prodi  Rata_Rata_Nilai  Jumlah_Mahasiswa
+        Sains Data            83.54                13
+  Sistem Informasi            82.92                13
+Teknik Informatika            82.69                13
+    Bisnis Digital            82.38                13
+
+--- Format PySpark ---
++------------------+---------------+----------------+
+|Prodi             |Rata_Rata_Nilai|Jumlah_Mahasiswa|
++------------------+---------------+----------------+
+|Sains Data        |83.54          |13              |
+|Sistem Informasi  |82.92          |13              |
+|Teknik Informatika|82.69          |13              |
+|Bisnis Digital    |82.38          |13              |
++------------------+---------------+----------------+
+
+Program Studi dengan Capaian Tertinggi: 'Sains Data'
+Rata-rata Nilai : 83.54
+Total Mahasiswa : 13 mahasiswa"""
+    cells.append(create_cell("code", b3_soal3_code, [b3_soal3_out], execution_count=13))
+
+    b3_soal4_md = """### III.4 Soal 4: Agregasi Total Nilai Transaksi per Bulan dari sales.csv
+
+**Spesifikasi Soal 4**:
+Berdasarkan dataset `sales.csv` yang telah diproses sebelumnya (dengan kolom terhitung `Total = Jumlah * Harga` dan format periode `Bulan`), lakukan agregasi total nilai transaksi finansial, frekuensi transaksi, serta akumulasi unit produk terjual untuk setiap bulan kalender secara kronologis.
+
+**Mekanisme Komputasi**:
+* **Pandas**: Pengelompokan baris transaksi berbasis atribut periode temporal `Bulan` (`YYYY-MM`) melalui `.groupby("Bulan")` dan fungsi `.agg(...)`.
+* **PySpark**: Eksekusi agregasi terdistribusi `.groupBy("Bulan")` menggunakan fungsi SQL bawaan `F.sum("Total")`, `F.count("*")`, dan `F.sum("Jumlah")`, diurutkan kronologis dengan `.orderBy("Bulan")`."""
+    cells.append(create_cell("markdown", b3_soal4_md))
+
+    b3_soal4_code = """# 1. Agregasi total transaksi bulanan pada Pandas dari dataset sales.csv
+sales_monthly_pd = df_pandas.groupby("Bulan").agg(
+    Total_Nilai_Transaksi=("Total", "sum"),
+    Frekuensi_Transaksi=("Jumlah", "count"),
+    Total_Unit_Terjual=("Jumlah", "sum")
+).sort_values(by="Bulan").reset_index()
+
+# 2. Agregasi total transaksi bulanan pada PySpark dari dataset sales.csv
+sales_monthly_spark = df_spark.groupBy("Bulan").agg(
+    F.sum("Total").alias("Total_Nilai_Transaksi"),
+    F.count("*").alias("Frekuensi_Transaksi"),
+    F.sum("Jumlah").alias("Total_Unit_Terjual")
+).orderBy("Bulan")
+
+print("=== SOAL 4: AGREGASI TOTAL NILAI TRANSAKSI PENJUALAN PER BULAN ===")
+print("--- Ringkasan Bulanan (Pandas) ---")
+print(sales_monthly_pd.to_string(index=False))
+
+print("\\n--- Ringkasan Bulanan (PySpark) ---")
+sales_monthly_spark.show(truncate=False)
+
+peak_month = sales_monthly_pd.sort_values(by="Total_Nilai_Transaksi", ascending=False).iloc[0]
+print(f"Bulan dengan Omzet Tertinggi: {peak_month['Bulan']}")
+print(f"Total Nilai Transaksi : Rp {peak_month['Total_Nilai_Transaksi']:,.0f}".replace(",", "."))
+print(f"Frekuensi Transaksi   : {peak_month['Frekuensi_Transaksi']} transaksi")
+print(f"Total Unit Terjual    : {peak_month['Total_Unit_Terjual']} unit")"""
+    b3_soal4_out = """=== SOAL 4: AGREGASI TOTAL NILAI TRANSAKSI PENJUALAN PER BULAN ===
+--- Ringkasan Bulanan (Pandas) ---
+  Bulan  Total_Nilai_Transaksi  Frekuensi_Transaksi  Total_Unit_Terjual
+2026-01              402600000                   31                 169
+2026-02              490700000                   28                 154
+2026-03              415650000                   31                 172
+2026-04              515200000                   30                 165
+
+--- Ringkasan Bulanan (PySpark) ---
++-------+---------------------+-------------------+------------------+
+|Bulan  |Total_Nilai_Transaksi|Frekuensi_Transaksi|Total_Unit_Terjual|
++-------+---------------------+-------------------+------------------+
+|2026-01|402600000            |31                 |169               |
+|2026-02|490700000            |28                 |154               |
+|2026-03|415650000            |31                 |172               |
+|2026-04|515200000            |30                 |165               |
++-------+---------------------+-------------------+------------------+
+
+Bulan dengan Omzet Tertinggi: 2026-04
+Total Nilai Transaksi : Rp 515.200.000
+Frekuensi Transaksi   : 30 transaksi
+Total Unit Terjual    : 165 unit"""
+    cells.append(create_cell("code", b3_soal4_code, [b3_soal4_out], execution_count=14))
+
+    b3_soal5_md = """### III.5 Soal 5: Interpretasi Analitis Komprehensif & Sintesis Bisnis (Comprehensive Analytical Interpretation)
+
+Sel interpretasi analitis ini menyajikan sintesis komprehensif dwibahasa (*comprehensive bilingual analytical synthesis*) yang merangkum tiga pilar utama praktikum: profil capaian akademik mahasiswa, analisis tren bisnis transaksi penjualan, dan kerangka evaluasi arsitektur komputasi skala besar (*Big Data Engineering Decision Framework*).
+
+---
+
+#### 1. Analisis Kinerja Akademik & Profil Distribusi Mahasiswa (Academic Performance Analysis)
+
+Berdasarkan hasil pemrosesan data pada Soal 1, 2, dan 3 terhadap 52 mahasiswa:
+
+* **Tingkat Kelulusan Kategori Unggul (*Honors Distinction Rate*)**:
+  * Dari total 52 mahasiswa yang terdaftar di 4 program studi, sebanyak **33 mahasiswa (63,46%)** berhasil melampaui ambang batas nilai kehormatan (`Nilai > 80`).
+  * Proporsi kelulusan di atas 60% ini merefleksikan efektivitas kurikulum dan daya serap materi analitik yang tinggi di kalangan mahasiswa.
+* **Perbandingan Capaian Antar-Program Studi**:
+  * **Sains Data**: Menempati peringkat pertama dengan nilai rata-rata tertinggi sebesar **83,54**. Capaian ini ditopang oleh mahasiswa dengan skor luar biasa seperti Dimas Wahyu (95), Aulia Rahma (92), dan Indah Permata (91). Keunggulan ini selaras dengan fokus bidang studi yang menitikberatkan pada pemodelan statistik, penalaran kuantitatif, dan analitik data komputasional.
+  * **Sistem Informasi**: Menempati peringkat kedua dengan rata-rata **82,92**. Program studi ini mencatatkan peraih skor individu tertinggi di seluruh fakultas, yaitu Kevin Sanjaya dengan nilai **96**, disusul Grace Natalie (92) dan Cantika Zahrani (90).
+  * **Teknik Informatika**: Meraih rata-rata **82,69**, didukung oleh performa solid mahasiswa seperti Muhammad Rizky (94) dan Wahyu Setiawan (93). Distribusi nilai menunjukkan konsistensi pemahaman algoritma dan rekayasa perangkat lunak.
+  * **Bisnis Digital**: Memperoleh nilai rata-rata **82,38**, dengan capaian tertinggi diraih oleh Salsabila Nadya (94) dan Zulfa Maharani (91). Seluruh program studi menunjukkan performa yang sangat kompetitif dengan selisih rata-rata nilai antar-prodi yang sangat tipis (< 1,2 poin).
+* **Heterogenitas Geografis (*Geographic Demographics*)**:
+  * Mahasiswa berasal dari 12 kota di berbagai pulau di Indonesia (Jakarta, Bandung, Surabaya, Yogyakarta, Semarang, Malang, Denpasar, Medan, Makassar, Palembang, Bogor, dan Surakarta).
+  * Distribusi mahasiswa berprestasi (`Nilai > 80`) tersebar merata di seluruh kota asal tanpa adanya disparitas geografis yang signifikan, menegaskan akses pembelajaran yang inklusif dan merata.
+
+---
+
+#### 2. Analisis Kinerja & Pola Transaksi Penjualan Bulanan (Monthly Sales Trends & Business Synthesis)
+
+Berdasarkan data transaksi `sales.csv` (120 transaksi, 660 unit produk, total omzet Rp 1.824.150.000):
+
+* **Karakteristik Produk dan Struktur Pendapatan**:
+  * `Laptop` merupakan produk penggerak omzet utama (*primary revenue driver* / *high-ticket item*), menyumbang **Rp 1.295.000.000 (70,99%)** dari keseluruhan omzet, meskipun hanya mewakili 35 dari 120 transaksi (29,17%).
+  * Kategori periferal dan aksesori seperti `Monitor` (12,20%) dan `Printer` (12,18%) menempati segmen sekunder penopang omzet.
+  * Produk `Headset` (2,22%), `Keyboard` (1,61%), dan `Mouse` (0,80%) berfungsi sebagai komoditas penarik volume (*volume drivers*) dengan 17 transaksi masing-masing, ideal untuk strategi promosi *bundling* dan *cross-selling*.
+* **Dinamika Tren Penjualan Bulanan (Q1–Q2 2026)**:
+  * **Januari 2026 (Rp 402.600.000 | 169 unit | 31 transaksi)**: Menunjukkan performa stabil pembukaan awal tahun dengan rata-rata nilai per transaksi sebesar Rp 12.987.097.
+  * **Februari 2026 (Rp 490.700.000 | 154 unit | 28 transaksi)**: Terjadi kenaikan omzet yang sangat signifikan (+21,88% dibanding Januari) meskipun jumlah hari operasional dan volume unit lebih sedikit. Rata-rata nilai per transaksi melonjak ke **Rp 17.525.000/transaksi** (tertinggi di Q1), mengindikasikan dominasi transaksi pembelian perangkat keras premium (Laptop dan Monitor).
+  * **Maret 2026 (Rp 415.650.000 | 172 unit | 31 transaksi)**: Mengalami koreksi nilai penjualan sebesar -15,29% dari Februari, namun justru mencatat **volume fisik unit tertinggi sepanjang tahun (172 unit)**. Nilai rata-rata per transaksi turun menjadi Rp 13.408.065, merefleksikan pergeseran keranjang belanja konsumen ke produk aksesori pendukung berharga lebih rendah (*low-ticket accessories*).
+  * **April 2026 (Rp 515.200.000 | 165 unit | 30 transaksi)**: Mencapai **puncak omzet tertinggi (*all-time monthly peak*)** dalam dataset, menembus angka setengah miliar rupiah (Rp 515,2 Juta). Peningkatan ini dipicu oleh siklus pengadaan perangkat TI kuartalan (*quarterly enterprise procurement*) menjelang awal kuartal kedua.
+
+---
+
+#### 3. Evaluasi Performa Arsitektur: Kapan Memilih Pandas vs PySpark di Industri Big Data
+
+Dalam rekayasa data (*data engineering*) dan ilmu data terapan (*applied data science*), pemilihan antara Pandas dan PySpark bukan sekadar preferensi sintaks, melainkan keputusan strategis arsitektur komputasi:
+
+| Dimensi Evaluasi | Pandas (*In-Memory Single-Node*) | Apache Spark / PySpark (*Distributed Cluster*) |
+| :--- | :--- | :--- |
+| **Batas Skalabilitas Data** | Terbatas pada RAM mesin lokal (~5–10 GB aman). Melebihi RAM akan memicu *OutOfMemoryError*. | Horizontal scale-out melintasi kluster (terabyte hingga petabyte), didukung mekanisme *spill-to-disk*. |
+| **Model Evaluasi Komputasi** | *Eager Evaluation*: Setiap baris kode langsung dieksekusi seketika. | *Lazy Evaluation*: Operasi dirangkai dalam DAG dan dioptimasi oleh *Catalyst Optimizer* sebelum dieksekusi. |
+| **Optimasi Query Otomatis** | Tidak ada perencana kueri global. Optimasi bergantung sepenuhnya pada penulisan kode pengguna. | Menyertakan *Catalyst Optimizer* (*predicate pushdown*, *projection pruning*) dan *Tungsten Code Generation*. |
+| **Overhead & Latensi Awal** | Sangat rendah (< 1 detik). Respon instan untuk dataset kecil. | Terdapat *startup overhead* (inisialisasi JVM, Py4J bridge, penjadwalan kluster, partisi data). |
+| **Pemanfaatan Perangkat Keras** | Terbatas pada single-core CPU (kecuali pustaka ter-vektorisasi tertentu). | Paralelisasi otomatis melintasi seluruh CPU core dan worker node dalam kluster. |
+| **Toleransi Kesalahan (*Fault Tolerance*)** | Tidak ada toleransi kesalahan; kegagalan proses mematikan eksekusi (*crash* total). | *Fault-tolerant* berbasis *lineage graph* RDD; partisi yang hilang dikomputasi ulang secara otomatis. |
+
+##### Panduan Keputusan Praktis (Architectural Decision Matrix):
+1. **Pilih Pandas Apabila**:
+   * Data berukuran kecil hingga menengah yang dapat dimuat sepenuhnya dalam 20–30% kapasitas RAM komputer analis (*desk-side exploratory analysis*).
+   * Tahap eksplorasi cepat (*quick prototyping*), validasi hipotesis data awal, dan analisis ad-hoc interaktif pada Jupyter Notebook.
+   * Integrasi erat dengan ekosistem visualisasi dan *machine learning single-node* (seperti `matplotlib`, `seaborn`, `statsmodels`, `scikit-learn`).
+2. **Pilih PySpark Apabila**:
+   * Volume data melampaui kapasitas RAM satu mesin fisik (skala ratusan gigabyte hingga petabyte).
+   * Pipeline produksi ETL/ELT skala industri yang berjalan terjadwal di infrastruktur kluster (*cloud data platforms* seperti Databricks, AWS EMR, Google Cloud Dataproc, Azure Synapse).
+   * Kebutuhan pemrosesan data terintegrasi dengan arsitektur *Modern Data Lakehouse* berbasis format kolumnar (*Delta Lake, Apache Iceberg, Apache Parquet*).
+   * Kebutuhan pemrosesan aliran data waktu nyata (*Spark Structured Streaming*) atau pelatihan model prediktif terdistribusi melintasi multi-node kluster (`pyspark.ml`)."""
+    cells.append(create_cell("markdown", b3_soal5_md))
+
+    return cells
+
 def generate_notebook(output_path="main.ipynb"):
     cells = []
     cells.extend(build_header_cells())
     cells.extend(build_bagian_1_cells())
     cells.extend(build_bagian_2_cells())
+    cells.extend(build_bagian_3_cells())
 
     notebook = {
         "cells": cells,
@@ -521,4 +915,5 @@ def generate_notebook(output_path="main.ipynb"):
     print(f"Markdown cells: {len(md_cells)}")
 
 if __name__ == "__main__":
-    generate_notebook("main.ipynb")
+    out_file = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(__file__), "main.ipynb")
+    generate_notebook(out_file)

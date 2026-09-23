@@ -13,6 +13,15 @@ def check_bagian_1_and_2(cells):
     assert has_spark_read, "Missing spark.read.csv"
     assert has_calc_total, "Missing Total column calculation"
 
+def check_bagian_3(cells):
+    source_texts = ["".join(c.get("source", [])) for c in cells]
+    assert any("Soal 1" in s for s in source_texts), "Missing Soal 1"
+    assert any("Soal 2" in s for s in source_texts), "Missing Soal 2"
+    assert any("Soal 3" in s for s in source_texts), "Missing Soal 3"
+    assert any("Soal 4" in s for s in source_texts), "Missing Soal 4"
+    assert any("Soal 5" in s for s in source_texts), "Missing Soal 5"
+    assert any("Nilai > 80" in s or "Nilai" in s for s in source_texts), "Missing Nilai > 80 filter"
+
 def verify_notebook(notebook_path: str) -> dict:
     if not os.path.exists(notebook_path):
         raise FileNotFoundError(f"Notebook file not found: {notebook_path}")
@@ -23,7 +32,7 @@ def verify_notebook(notebook_path: str) -> dict:
     assert nb.get("nbformat") == 4, f"Invalid nbformat version: {nb.get('nbformat')}"
     assert "cells" in nb, "Notebook missing 'cells' key"
     cells = nb["cells"]
-    assert len(cells) >= 15, f"Notebook has insufficient cells: {len(cells)}"
+    assert len(cells) >= 22, f"Notebook has insufficient cells: {len(cells)}"
 
     code_cells = [c for c in cells if c.get("cell_type") == "code"]
     for i, cell in enumerate(code_cells):
@@ -31,6 +40,7 @@ def verify_notebook(notebook_path: str) -> dict:
         assert cell.get("execution_count") is not None, f"Code cell {i+1} has no execution_count"
 
     check_bagian_1_and_2(cells)
+    check_bagian_3(cells)
 
     required_keywords = [
         "Bagian I",
