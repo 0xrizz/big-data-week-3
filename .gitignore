@@ -1,0 +1,11 @@
+# Coursework Briefs & Assignment Prompts
+Brief.md
+original-request.brief.md
+*.brief.md
+
+# Environments & Python Artifacts
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
