@@ -26,12 +26,11 @@ This repository contains the complete practical implementation and independent e
 
 ```text
 .
+├── .gitignore              # Git ignore configuration (virtual environments, caches, and internal briefs)
+├── README.md               # Repository documentation and project overview
 ├── main.ipynb              # Unified notebook containing end-to-end code, executions, and insights
-├── sales.csv               # Transactional sales dataset (120 records)
 ├── requirements.txt        # Standalone Python dependencies for local and Colab execution
-├── Brief.md                # Standardized assignment brief and submission checklist
-├── original-request.brief.md # Original course announcement and instructions
-└── README.md               # Repository documentation and project overview
+└── sales.csv               # Transactional sales dataset (120 records)
 ```
 
 ---
