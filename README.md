@@ -9,7 +9,7 @@ A comprehensive hands-on comparative analysis and practical implementation of da
 
 ---
 
-## 📌 Project Overview
+## Project Overview
 
 This repository contains the complete practical implementation and independent exercises for **Week 3 Big Data Analytics**. The primary objective is to evaluate differences in execution paradigms, performance trade-offs, and syntax patterns between single-machine data processing (Pandas) and distributed data processing (PySpark).
 
@@ -22,7 +22,7 @@ This repository contains the complete practical implementation and independent e
 
 ---
 
-## 📂 Repository Structure
+## Repository Structure
 
 ```text
 .
@@ -35,7 +35,7 @@ This repository contains the complete practical implementation and independent e
 
 ---
 
-## 📊 Analytical Walkthrough & Key Findings
+## Analytical Walkthrough & Key Findings
 
 ### 1. Guided Walkthrough on `sales.csv`
 - **Total Revenue**: Rp 1.824.150.000 across 660 total units sold.
@@ -59,7 +59,7 @@ This repository contains the complete practical implementation and independent e
 
 ---
 
-## 🚀 Getting Started & Execution
+## Getting Started & Execution
 
 ### Prerequisites
 - Python 3.10 or higher
@@ -100,15 +100,15 @@ To run in Google Colab:
 
 ---
 
-## 📜 Coursework Metadata
+## Coursework Metadata
 
 - **Course**: Big Data Analytics
 - **Module**: Week 3 - Practical Pandas and PySpark
-- **Author**: [TODO: Student Name / ID]
+- **Author**: 0xrizz
 - **Status**: Completed & Verified
 
 ---
 
-## 📄 License
+## License
 
 This repository is maintained for academic coursework and portfolio purposes.
