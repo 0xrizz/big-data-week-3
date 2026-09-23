@@ -1,8 +1,18 @@
+# Original Request: [big data - week 3]
+
+> **Source**: [Google Classroom]  
+> **Received Date**: [2026-09-24]  
+
+---
+
+## Raw Instructions & Prompt
+
+```
 Please complete the practical assignments provided in Module 3, covering Pandas and PySpark.
 
 The sales.csv dataset required for the exercises is available in Google Classroom. Please download and use this dataset when completing the assignments.
 
-You must submit&nbsp;
+You must submit:
 
 * Pandas Practice Notebook  
 * PySpark Practice Notebook
@@ -17,7 +27,9 @@ Before submitting your work, please make sure that:
 * Both notebooks are saved in .ipynb format.
 
 Please check your files carefully and submit both notebooks before the due date. Late submissions should be avoided.
+```
 
-&nbsp;
+## Supplementary Notes or Links (Optional)
 
-&nbsp;
+- dataset: sales.csv
+- resources/big-data
